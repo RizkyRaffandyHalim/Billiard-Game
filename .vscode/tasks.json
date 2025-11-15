@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build SFML",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "main.cpp",
+        "Ball.cpp",
+        "Table.cpp",
+        "Hole.cpp",
+        "CueStick.cpp",
+        "-I",
+        "C:/SFML/SFML-2.6.1/include",
+        "-L",
+        "C:/SFML/SFML-2.6.1/lib",
+        "-lsfml-graphics",
+        "-lsfml-window",
+        "-lsfml-system",
+        "-o",
+        "billiard.exe"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
