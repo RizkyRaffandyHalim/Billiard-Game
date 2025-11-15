@@ -7,7 +7,7 @@
 #include "Ball.h"
 #include "Table.h"
 #include "Hole.h"
-#include "CueStick.h"
+#include "CueStick.h" // Asumsi ini ada, meskipun tidak digunakan secara penuh
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
