@@ -2,13 +2,11 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-// =========================
-//   KONSTRUKTOR BALL
-// =========================
+//   Konstruktor Ball
 Ball::Ball(float radius, sf::Vector2f pos, sf::Color color, int ballNumber, bool isStripe)
     : ballNumber(ballNumber), isPocketed(false), mass(1.f)
 {
-    (void)isStripe; // Hilangkan warning parameter tidak digunakan
+    (void)isStripe; 
 
     shape.setRadius(radius);
     shape.setOrigin(radius, radius);
@@ -22,20 +20,14 @@ Ball::Ball(float radius, sf::Vector2f pos, sf::Color color, int ballNumber, bool
     shading.setFillColor(sf::Color(255, 255, 255, 100));
 }
 
-
-// =========================
-//   RESET POSISI
-// =========================
+//   Reset Posisi
 void Ball::resetPosition(sf::Vector2f pos) {
     shape.setPosition(pos);
     velocity = {0.f, 0.f};
     isPocketed = false;
 }
 
-
-// =========================
-//       UPDATE LOGIC
-// =========================
+//       Update Logic
 void Ball::update(float dt, const sf::RenderWindow& window,
                   float tableLeft, float tableTop,
                   float tableRight, float tableBottom)
@@ -66,10 +58,7 @@ void Ball::update(float dt, const sf::RenderWindow& window,
     if (pos.y + r > tableBottom){ shape.setPosition(pos.x, tableBottom - r);    velocity.y = -velocity.y; }
 }
 
-
-// =========================
-//       DRAW BALL
-// =========================
+//       Draw Ball
 void Ball::draw(sf::RenderWindow& window, sf::Font& font) {
     if (isPocketed) return;
 

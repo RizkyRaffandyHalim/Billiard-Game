@@ -1,8 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include "CueStick.h"
-
-// 🔹 fallback jika M_PI tidak didefinisikan oleh compiler
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -11,12 +9,12 @@ CueStick::CueStick(float length, float thickness, sf::Color color)
     : stickLength(length), stickThickness(thickness), isDragging(false), maxPullDistance(100.f),
       cueLine(sf::Lines, 2)
 {
-    // 🔹 Garis pembidik (putih, selalu muncul)
+    // Garis pembidik
     stick.setSize(sf::Vector2f(stickLength, stickThickness));
     stick.setOrigin(stickLength / 2.f, stickThickness / 2.f);
     stick.setFillColor(sf::Color::White);
 
-    // 🔹 Tongkat pemukul (coklat, muncul saat drag)
+    // Tongkat pemukul
     cueLine[0].color = sf::Color(139, 69, 19);
     cueLine[1].color = sf::Color(139, 69, 19);
 }
@@ -41,7 +39,7 @@ void CueStick::reset() {
 }
 
 void CueStick::updateAimLine(sf::Vector2f cueBallPos, sf::Vector2f mousePos) {
-    // 🔹 Garis pembidik putih mengikuti arah mouse
+    // Garis pembidik putih mengikuti arah mouse
     sf::Vector2f direction = mousePos - cueBallPos;
     float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
     if (length != 0) direction /= length;
@@ -51,7 +49,7 @@ void CueStick::updateAimLine(sf::Vector2f cueBallPos, sf::Vector2f mousePos) {
 }
 
 void CueStick::updateStrikingStick(sf::Vector2f cueBallPos, sf::Vector2f mousePos) {
-    // 🔹 Tongkat coklat (stick aktif saat drag)
+    // Tongkat coklat
     sf::Vector2f direction = mousePos - cueBallPos;
     float len = std::sqrt(direction.x * direction.x + direction.y * direction.y);
     if (len != 0) direction /= len;
@@ -59,7 +57,6 @@ void CueStick::updateStrikingStick(sf::Vector2f cueBallPos, sf::Vector2f mousePo
     float pull = 0.f;
     if (isDragging) {
         sf::Vector2f dragVec = dragCurrentPos - dragStartPos;
-        // 🔹 Pastikan perhitungan pakai float agar tidak konflik (std::min<float>)
         pull = std::min<float>(maxPullDistance, std::sqrt(dragVec.x * dragVec.x + dragVec.y * dragVec.y));
     }
 
@@ -70,10 +67,8 @@ void CueStick::updateStrikingStick(sf::Vector2f cueBallPos, sf::Vector2f mousePo
 }
 
 void CueStick::draw(sf::RenderWindow& window) {
-    // 🔹 Garis putih pembidik selalu tampil
     window.draw(stick);
 
-    // 🔹 Tongkat coklat hanya saat drag
     if (isDragging)
         window.draw(cueLine);
 }

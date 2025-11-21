@@ -15,7 +15,6 @@ public:
 
     sf::CircleShape shading;
 
-    // Parameter isStripe dipertahankan, tetapi ditandai agar tidak memicu warning unused
     Ball(float radius, sf::Vector2f pos, sf::Color color, int ballNumber, bool isStripe = false); 
     
     void resetPosition(sf::Vector2f pos);

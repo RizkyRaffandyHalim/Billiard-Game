@@ -17,13 +17,14 @@ public:
     void draw(sf::RenderWindow& window);
     void reset();
 
-    // 🔹 Buka akses supaya bisa dibaca dari main.cpp
+    bool getIsDragging() const { return isDragging; }
+
     sf::Vector2f dragStartPos;
     sf::Vector2f dragCurrentPos;
 
 private:
-    sf::RectangleShape stick;     // 🔹 Sekarang ini garis putih pembidik (selalu muncul)
-    sf::VertexArray cueLine;      // 🔹 Ini tongkat coklat, hanya muncul saat didrag
+    sf::RectangleShape stick;     
+    sf::VertexArray cueLine;      
     bool isDragging;
     float stickLength;
     float stickThickness;

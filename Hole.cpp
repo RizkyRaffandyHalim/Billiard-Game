@@ -15,7 +15,7 @@ bool Hole::checkBallInHole(Ball& ball){
     sf::Vector2f diff = ball.shape.getPosition() - shape.getPosition();
     float dist = std::sqrt(diff.x*diff.x + diff.y*diff.y);
 
-    if(dist < radius){ // radius lebih besar dari bola
+    if(dist < radius){ 
         ball.isPocketed=true;
         return true;
     }
