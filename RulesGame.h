@@ -3,9 +3,9 @@
 #include <vector>
 #include <string>
 #include "Ball.h"
+#include "CueBall.h"
 #include "Table.h"
 #include "Hole.h"
-#include "CueStick.h"
 
 enum GameState {
     BREAK,
@@ -24,9 +24,9 @@ enum BallGroup {
     CUE_BALL
 };
 
-class BilliardsGame {
+class RulesGame {
 public:
-    BilliardsGame(int windowW = 1080, int windowH = 600, float border = 50.f);
+    RulesGame (int windowW = 1080, int windowH = 600, float border = 50.f);
     void run();
 
 private:
@@ -39,9 +39,9 @@ private:
     float tableLeft, tableTop, tableRight, tableBottom;
 
     // entities
-    std::vector<Ball> balls;
+    CueBall cueBall;
+    std::vector<Ball> objectBalls; 
     std::vector<Hole> holes;
-    CueStick cue;
 
     // state
     GameState currentGameState;
@@ -61,9 +61,7 @@ private:
 
     // input/aim
     bool isDragging;
-    sf::Vector2f dragStartPos;
-    float currentCueAngle;
-
+    
     // UI
     sf::Font font;
     sf::Text statusText;
@@ -74,8 +72,8 @@ private:
     BallGroup getBallGroup(int ballNumber) const;
     std::string getGroupStr(BallGroup group) const;
     void handleBallCollision(Ball &a, Ball &b);
-    bool allBallsStopped(const std::vector<Ball>& balls) const;
-    std::vector<Ball> createRack(float tableLeft, float tableTop, float tableRight, float tableBottom);
+    bool allBallsStopped() const;
+    void createRack(float tableLeft, float tableTop, float tableRight, float tableBottom);
 
     // loop helpers
     void processEvents();

@@ -8,7 +8,6 @@ Hole::Hole(float x,float y,float r): radius(r){
     shape.setFillColor(sf::Color::Black);
 }
 
-// cek bola masuk hole
 bool Hole::checkBallInHole(Ball& ball){
     if(ball.isPocketed) return false;
 
@@ -16,7 +15,7 @@ bool Hole::checkBallInHole(Ball& ball){
     float dist = std::sqrt(diff.x*diff.x + diff.y*diff.y);
 
     if(dist < radius){ 
-        ball.isPocketed=true;
+        ball.isPocketed = true;
         return true;
     }
     return false;

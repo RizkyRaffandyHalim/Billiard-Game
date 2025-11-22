@@ -7,8 +7,9 @@
       "command": "g++",
       "args": [
         "main.cpp",
-        "BilliardsGame.cpp",
+        "RulesGame.cpp",
         "Ball.cpp",
+        "CueBall.cpp",
         "Table.cpp",
         "Hole.cpp",
         "CueStick.cpp",
@@ -26,7 +27,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": []
+      "problemMatcher": ["$gcc"]
     }
   ]
 }
