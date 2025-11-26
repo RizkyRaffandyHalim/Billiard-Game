@@ -7,7 +7,7 @@
 
 class CueStick {
 public:
-    CueStick(float length = 160.f, float thickness = 6.f);
+    CueStick(float length = 346.f, float thickness = 6.f);
 
     // Update logika visual stick dan aim line
     void update(sf::Vector2f cueBallPos, sf::Vector2f mousePos, bool allowAim);
@@ -27,13 +27,20 @@ public:
 
 private:
     // Visuals
-    sf::RectangleShape stickShape;     
+    sf::RectangleShape stickShape;
+    
+    // ASSETS
+    sf::Texture stickTexture;
+    sf::Sprite stickSprite;
+    bool useTexture;
+
     sf::VertexArray aimLine;      
 
     // Logic properties
     bool isDragging;
     bool isVisible;
     float stickLength;
+    float stickThickness;
     float maxPullDistance;
     
     // Angle smoothing

@@ -6,5 +6,5 @@ Langkah - langkah setelah clone repo:
 4. Crtl + Shift + P
 5. Task: Run Task
 6. Build SFML
-7. Compile : g++ main.cpp RulesGame.cpp Ball.cpp CueBall.cpp CueStick.cpp Table.cpp Hole.cpp -I C:/SFML/SFML-2.6.1/include -L C:/SFML/SFML-2.6.1/lib -lsfml-graphics -lsfml-window -lsfml-system -o billiard.exe
+7. Compile : g++ main.cpp GameManager.cpp Ball.cpp CueBall.cpp CueStick.cpp Table.cpp Hole.cpp Score.cpp -I C:/SFML/SFML-2.6.1/include -L C:/SFML/SFML-2.6.1/lib -lsfml-graphics -lsfml-window -lsfml-system -o billiard.exe
 8. .\billiard.exe

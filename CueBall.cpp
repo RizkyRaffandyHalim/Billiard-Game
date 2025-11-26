@@ -3,8 +3,7 @@
 CueBall::CueBall(float radius, sf::Vector2f pos, sf::Color color)
     : Ball(radius, pos, color, 0, false), 
       cueStick() 
-{
-}
+{}
 
 void CueBall::resetPosition(sf::Vector2f pos) {
     Ball::resetPosition(pos);
@@ -20,7 +19,7 @@ void CueBall::updateCue(sf::RenderWindow& window, bool canAim) {
     }
 }
 
-void CueBall::draw(sf::RenderWindow& window, sf::Font& font) {
-    Ball::draw(window, font);
+void CueBall::draw(sf::RenderWindow& window, sf::Font& font, sf::Texture* texture) {
+    Ball::draw(window, font, texture);
     cueStick.draw(window);
 }

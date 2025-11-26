@@ -1,8 +1,13 @@
 #pragma once
+#ifndef GAMEMANAGER_H
+#define GAMEMANAGER_H
+
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <map>
 #include "Ball.h"
+#include "Score.h"
 #include "CueBall.h"
 #include "Table.h"
 #include "Hole.h"
@@ -16,70 +21,59 @@ enum GameState {
     GAME_OVER
 };
 
-enum BallGroup {
-    NONE,
-    SOLID,
-    STRIPES,
-    EIGHT_BALL,
-    CUE_BALL
-};
-
-class RulesGame {
+class GameManager {
 public:
-    RulesGame (int windowW = 1080, int windowH = 600, float border = 50.f);
+    GameManager(int windowW = 1080, int windowH = 600, float border = 50.f);
     void run();
 
 private:
-    // window & table
+    // Window & Dimensions
     sf::RenderWindow window;
-    int windowWidth;
-    int windowHeight;
-    float borderThickness;
-    Table table;
+    int windowWidth, windowHeight;
     float tableLeft, tableTop, tableRight, tableBottom;
+    float borderThickness;
 
-    // entities
+    // Sub-Systems
+    Score score;
+    Table table;
+
+    // Entities
     CueBall cueBall;
     std::vector<Ball> objectBalls; 
     std::vector<Hole> holes;
+    std::map<int, sf::Texture> ballTextures;
 
-    // state
+    // Game State
     GameState currentGameState;
     int currentPlayer;
     BallGroup playerGroup[3];
 
-    // shot related
+    // Turn Logic Variables
     bool shotMade;
     bool cueBallPocketed;
     std::vector<int> pocketedObjBallsThisTurn;
+    std::vector<int> pocketedOrder; 
     bool isFoul;
-
-    // new rule variables
     bool firstBallHitThisShot;
     bool ballHitRailAfterContact;
     int firstObjectBallHit;
-
-    // input/aim
     bool isDragging;
     
-    // UI
     sf::Font font;
-    sf::Text statusText;
-    sf::RectangleShape p1Status, p2Status;
-    sf::Text p1Text, p2Text;
 
-    // helpers
+    // Helper Methods
     BallGroup getBallGroup(int ballNumber) const;
-    std::string getGroupStr(BallGroup group) const;
-    void handleBallCollision(Ball &a, Ball &b);
     bool allBallsStopped() const;
     void createRack(float tableLeft, float tableTop, float tableRight, float tableBottom);
 
-    // loop helpers
+    // Loop Methods
     void processEvents();
     void update(float dt);
     void render();
 
-    // logic helper
+    // Logic Methods
     void handleTurnEnd();
+    std::string getStatusMessage(sf::Color& outColor); 
 };
+
+#endif // GAMEMANAGER_H

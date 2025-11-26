@@ -1,7 +1,7 @@
-#include "RulesGame.h"
+#include "GameManager.h"
 
 int main() {
-    RulesGame game;
+    GameManager game;
     game.run();
     return 0;
 }
