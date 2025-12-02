@@ -5,7 +5,7 @@ Hole::Hole(float x,float y,float r): radius(r){
     shape.setRadius(radius);
     shape.setOrigin(radius,radius);
     shape.setPosition(x,y);
-    shape.setFillColor(sf::Color::Black);
+    shape.setFillColor(sf::Color::Transparent);
 }
 
 bool Hole::checkBallInHole(Ball& ball){

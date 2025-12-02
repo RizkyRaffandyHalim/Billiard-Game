@@ -10,10 +10,12 @@ void CueBall::resetPosition(sf::Vector2f pos) {
     cueStick.reset();
 }
 
-void CueBall::updateCue(sf::RenderWindow& window, bool canAim) {
-    sf::Vector2f mousePos = (sf::Vector2f)sf::Mouse::getPosition(window);
-    cueStick.update(shape.getPosition(), mousePos, canAim);
+void CueBall::updateCue(sf::RenderWindow& window, bool canAim, const std::vector<Ball>& objectBalls) {
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePos = window.mapPixelToCoords(pixelPos);
     
+    cueStick.update(shape.getPosition(), mousePos, canAim, objectBalls);
+
     if(cueStick.getIsDragging()) {
         cueStick.updateDrag(mousePos);
     }

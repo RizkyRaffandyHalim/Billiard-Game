@@ -18,17 +18,24 @@ GameManager::GameManager(int windowW, int windowH, float border)
     window.create(sf::VideoMode(windowWidth, windowHeight + topUIHeight + bottomUIHeight), "Simulation Billiard Game");
     window.setFramerateLimit(60);
 
-    // Hitung area meja
-    tableLeft   = borderThickness + leftPanelWidth;
-    tableTop    = borderThickness + topUIHeight; 
-    tableRight  = (float)windowWidth - borderThickness - rightPanelWidth;
-    tableBottom = ((float)windowHeight + topUIHeight) - borderThickness;
+    // Batas Pantulan Bola
+    float cushionOffset = 14.f; 
 
-    float playAreaWidth = tableRight - tableLeft;
-    float playAreaHeight = tableBottom - tableTop;
+    tableLeft   = borderThickness + leftPanelWidth + cushionOffset;
+    tableTop    = borderThickness + topUIHeight + cushionOffset; 
+    tableRight  = (float)windowWidth - borderThickness - rightPanelWidth - cushionOffset;
+    tableBottom = ((float)windowHeight + topUIHeight) - borderThickness - cushionOffset;
+
+    float visualTableLeft = borderThickness + leftPanelWidth;
+    float visualTableTop = borderThickness + topUIHeight;
+    float playAreaWidth = ((float)windowWidth - borderThickness - rightPanelWidth) - visualTableLeft;
+    float playAreaHeight = (((float)windowHeight + topUIHeight) - borderThickness) - visualTableTop;
     
-    table.felt.setPosition(tableLeft, tableTop);
+    table.felt.setPosition(visualTableLeft, visualTableTop);
     table.felt.setSize(sf::Vector2f(playAreaWidth, playAreaHeight));
+
+    // Warna cushion
+    table.setupCushions(cushionOffset, sf::Color(0, 30, 50));
     
     // Init State
     currentGameState = BREAK;
@@ -62,16 +69,21 @@ GameManager::GameManager(int windowW, int windowH, float border)
 
     createRack(tableLeft, tableTop, tableRight, tableBottom);
     
+    //Hole Positions
+    float holeOffset = 0.f;
+    float centerOffset = -10.f;
     float holeRadius = 28.f;
+
     holes = {
-        {tableLeft, tableTop, holeRadius}, 
-        {tableRight, tableTop, holeRadius},
-        {tableLeft, tableBottom, holeRadius}, 
-        {tableRight, tableBottom, holeRadius},
-        {(tableLeft + tableRight) / 2.f, tableTop, holeRadius * 0.8f},
-        {(tableLeft + tableRight) / 2.f, tableBottom, holeRadius * 0.8f}
+        {tableLeft  + holeOffset, tableTop    + holeOffset, holeRadius}, 
+        {tableRight - holeOffset, tableTop    + holeOffset, holeRadius},
+        {tableLeft  + holeOffset, tableBottom - holeOffset, holeRadius}, 
+        {tableRight - holeOffset, tableBottom - holeOffset, holeRadius},
+
+        {(tableLeft + tableRight) / 2.f, tableTop    + centerOffset, holeRadius},
+        {(tableLeft + tableRight) / 2.f, tableBottom - centerOffset, holeRadius}
     };
-    
+
     playerGroup[1] = NONE;
     playerGroup[2] = NONE;
 }
@@ -135,7 +147,8 @@ void GameManager::processEvents() {
 
         // Mouse Press
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            sf::Vector2f mp = (sf::Vector2f)sf::Mouse::getPosition(window);
+            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+            sf::Vector2f mp = window.mapPixelToCoords(pixelPos);
 
             if (currentGameState == BALL_IN_HAND) {
                 if (mp.x > tableLeft + 5.f && mp.x < tableRight - 5.f &&
@@ -204,7 +217,7 @@ void GameManager::update(float dt) {
 
     // Stick Update
     bool showCue = canAim && currentGameState != BALL_IN_HAND && currentGameState != GAME_OVER;
-    cueBall.updateCue(window, showCue); 
+    cueBall.updateCue(window, showCue, objectBalls); 
 
     // COLLISION CHECKING
     for (auto &b : objectBalls) {
@@ -354,7 +367,7 @@ std::string GameManager::getStatusMessage(sf::Color& outColor) {
             if (hitGroup != foulerGroup && hitGroup != EIGHT_BALL) msg += "(Sebab: Mengenai Bola Lawan Terlebih Dahulu)";
         } 
         if (msg.find("Sebab") == std::string::npos && pocketedObjBallsThisTurn.empty() && !ballHitRailAfterContact) {
-            msg += "(Sebab: Tidak Ada Bola Masuk / Tidak Ada Bola Sentuh Rail)";
+            msg += "(Sebab: Tidak Ada Bola Masuk & Tidak Ada Bola Sentuh Rail)";
         }
         outColor = sf::Color(255, 100, 100);
     } else {

@@ -19,7 +19,33 @@ Table::Table(int width, int height, float border) {
     
     felt.setFillColor(sf::Color(0, 50, 80)); 
     felt.setOutlineThickness(border);
-    felt.setOutlineColor(sf::Color(70, 35, 10)); 
+    felt.setOutlineColor(sf::Color(139, 69, 19)); 
+}
+
+    // SetupCushions
+void Table::setupCushions(float thickness, sf::Color color) {
+    sf::Vector2f pos = felt.getPosition();
+    sf::Vector2f size = felt.getSize();
+
+    // Cushion Kiri
+    cushions[0].setSize(sf::Vector2f(thickness, size.y));
+    cushions[0].setPosition(pos.x, pos.y);
+
+    // Cushion Atas
+    cushions[1].setSize(sf::Vector2f(size.x, thickness));
+    cushions[1].setPosition(pos.x, pos.y);
+
+    // Cushion Kanan
+    cushions[2].setSize(sf::Vector2f(thickness, size.y));
+    cushions[2].setPosition(pos.x + size.x - thickness, pos.y);
+
+    // Cushion Bawah
+    cushions[3].setSize(sf::Vector2f(size.x, thickness));
+    cushions[3].setPosition(pos.x, pos.y + size.y - thickness);
+
+    for(int i = 0; i < 4; i++) {
+        cushions[i].setFillColor(color);
+    }
 }
 
 void Table::draw(sf::RenderWindow& window){
@@ -41,5 +67,10 @@ void Table::draw(sf::RenderWindow& window){
         window.draw(tableSprite);
     } else {
         window.draw(felt);
+        
+        // Draw cushions if no texture
+        for(int i = 0; i < 4; i++) {
+            window.draw(cushions[i]);
+        }
     }
 }

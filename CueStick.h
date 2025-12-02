@@ -4,15 +4,14 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <vector>
+#include "Ball.h"
 
 class CueStick {
 public:
     CueStick(float length = 346.f, float thickness = 6.f);
 
-    // Update logika visual stick dan aim line
-    void update(sf::Vector2f cueBallPos, sf::Vector2f mousePos, bool allowAim);
+    void update(sf::Vector2f cueBallPos, sf::Vector2f mousePos, bool allowAim, const std::vector<Ball>& balls);
     
-    // Logika drag power
     void startDrag(sf::Vector2f mousePos);
     void updateDrag(sf::Vector2f mousePos);
     void endDrag();
@@ -35,6 +34,11 @@ private:
     bool useTexture;
 
     sf::VertexArray aimLine;      
+    
+    // Visual Prediksi
+    sf::CircleShape ghostBall;
+    sf::VertexArray targetAimLine;
+    bool showGhostBall;
 
     // Logic properties
     bool isDragging;
