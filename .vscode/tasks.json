@@ -14,6 +14,7 @@
         "Hole.cpp",
         "CueStick.cpp",
         "Score.cpp",
+        "Menu.cpp",
         "-I",
         "C:/SFML/SFML-2.6.1/include",
         "-L",
@@ -21,6 +22,7 @@
         "-lsfml-graphics",
         "-lsfml-window",
         "-lsfml-system",
+        "-mwindows",
         "-o",
         "billiard.exe"
       ],
@@ -28,7 +30,9 @@
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": ["$gcc"]
+      "problemMatcher": [
+        "$gcc"
+      ]
     }
   ]
 }

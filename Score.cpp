@@ -48,6 +48,50 @@ Score::Score(int windowW, int windowH, float topH, float bottomH, float leftW, f
     float panelY = windowHeight + topUIHeight + 15.f;
     p2Status.setPosition(windowWidth - 140.f, panelY);
     p1Status.setPosition(windowWidth - 280.f, panelY);
+
+    // SETUP PAUSE BUTTON
+    float btnSize = 44.f; 
+    float btnX = 20.f; 
+    float btnY = 28.f;
+
+    pauseBtnBg.setSize(sf::Vector2f(btnSize, btnSize));
+    pauseBtnBg.setPosition(btnX, btnY);
+    pauseBtnBg.setFillColor(sf::Color(40, 140, 40)); 
+    pauseBtnBg.setOutlineThickness(3.f);
+    pauseBtnBg.setOutlineColor(sf::Color(80, 180, 80)); 
+    
+    for(int i=0; i<3; i++) {
+        hamburgerLines[i].setSize(sf::Vector2f(26.f, 4.f));
+        hamburgerLines[i].setFillColor(sf::Color::White);
+        hamburgerLines[i].setOrigin(13.f, 2.f);
+        hamburgerLines[i].setPosition(btnX + btnSize/2.f, btnY + 11.f + (i * 10.f));
+    }
+
+    // SETUP PAUSE MENU OVERLAY
+    // Overlay
+    pauseOverlay.setSize(sf::Vector2f((float)windowWidth, (float)(windowHeight + topUIHeight + bottomUIHeight)));
+    pauseOverlay.setFillColor(sf::Color(0, 0, 0, 220)); 
+
+    float menuW = 320.f; 
+    float menuH = 65.f;
+    float cx = windowWidth / 2.f;
+    float cy = (windowHeight + topUIHeight) / 2.f;
+
+    // Tombol Resume
+    btnResume.setSize(sf::Vector2f(menuW, menuH));
+    btnResume.setOrigin(menuW/2, menuH/2);
+    btnResume.setPosition(cx, cy - 50.f);
+    btnResume.setFillColor(sf::Color(50, 200, 50, 230)); 
+    btnResume.setOutlineThickness(2.f);
+    btnResume.setOutlineColor(sf::Color(255, 255, 255, 200));
+
+    // Tombol Quit
+    btnQuit.setSize(sf::Vector2f(menuW, menuH));
+    btnQuit.setOrigin(menuW/2, menuH/2);
+    btnQuit.setPosition(cx, cy + 50.f);
+    btnQuit.setFillColor(sf::Color(200, 50, 50, 230));
+    btnQuit.setOutlineThickness(2.f);
+    btnQuit.setOutlineColor(sf::Color(255, 255, 255, 200));
 }
 
 void Score::loadAssets(sf::Font& fontRef) {
@@ -69,6 +113,37 @@ void Score::loadAssets(sf::Font& fontRef) {
     statusText.setCharacterSize(20); 
     statusText.setFillColor(sf::Color::White);
     statusText.setPosition(20.f, windowHeight + topUIHeight + 18.f);
+
+    // SETUP TEXT PAUSE MENU
+    // Text PAUSED
+    txtPausedTitle.setFont(*font);
+    txtPausedTitle.setString("PAUSED");
+    txtPausedTitle.setCharacterSize(48);
+    txtPausedTitle.setStyle(sf::Text::Bold);
+    txtPausedTitle.setFillColor(sf::Color::White);
+    txtPausedTitle.setOutlineThickness(2.f);
+    txtPausedTitle.setOutlineColor(sf::Color::Black);
+    sf::FloatRect pb = txtPausedTitle.getLocalBounds();
+    txtPausedTitle.setOrigin(pb.left + pb.width/2.0f, pb.top + pb.height/2.0f);
+    txtPausedTitle.setPosition(windowWidth/2.f, (windowHeight+topUIHeight)/2.f - 160.f);
+
+    // Teks RESUME
+    txtResume.setFont(*font); 
+    txtResume.setString("RESUME GAME"); 
+    txtResume.setCharacterSize(26);
+    txtResume.setStyle(sf::Text::Bold);
+    sf::FloatRect rb = txtResume.getLocalBounds();
+    txtResume.setOrigin(rb.left + rb.width/2.0f, rb.top + rb.height/2.0f);
+    txtResume.setPosition(btnResume.getPosition());
+
+    // Teks QUIT
+    txtQuit.setFont(*font); 
+    txtQuit.setString("QUIT TO MENU"); 
+    txtQuit.setCharacterSize(26);
+    txtQuit.setStyle(sf::Text::Bold);
+    sf::FloatRect qb = txtQuit.getLocalBounds();
+    txtQuit.setOrigin(qb.left + qb.width/2.0f, qb.top + qb.height/2.0f);
+    txtQuit.setPosition(btnQuit.getPosition());
 }
 
 std::string Score::getGroupStr(BallGroup group) const {
@@ -88,22 +163,40 @@ bool Score::isBallPocketed(int number, const std::vector<Ball>& objectBalls) {
 void Score::drawMiniBall(sf::RenderWindow& window, float x, float y, int number, std::map<int, sf::Texture>& textures) {
     float radius = 15.f; 
     float diameter = radius * 2.f;
-
     sf::Sprite ballSprite;
     if (textures.find(number) != textures.end()) {
         ballSprite.setTexture(textures[number]);
     }
-    
-    // Scaling
     sf::Vector2u texSize = ballSprite.getTexture()->getSize();
     float scaleX = diameter / texSize.x;
     float scaleY = diameter / texSize.y;
     ballSprite.setScale(scaleX, scaleY);
-
     ballSprite.setOrigin(texSize.x / 2.f, texSize.y / 2.f);
     ballSprite.setPosition(x, y);
-
     window.draw(ballSprite);
+}
+
+// FUNGSI CEK KLIK
+bool Score::isPauseBtnClicked(sf::Vector2f mousePos) {
+    return pauseBtnBg.getGlobalBounds().contains(mousePos);
+}
+
+int Score::getPauseMenuAction(sf::Vector2f mousePos) {
+    if (btnResume.getGlobalBounds().contains(mousePos)) return 1; // Resume
+    if (btnQuit.getGlobalBounds().contains(mousePos)) return 2;   // Quit
+    return 0;
+}
+
+void Score::renderPauseMenu(sf::RenderWindow& window) {
+    // Render overlay dan elemen menu pause
+    window.draw(pauseOverlay);
+    window.draw(txtPausedTitle);
+    
+    window.draw(btnResume);
+    window.draw(txtResume);
+
+    window.draw(btnQuit);
+    window.draw(txtQuit);
 }
 
 void Score::render(sf::RenderWindow& window, int currentPlayer, BallGroup groupP1, BallGroup groupP2, 
@@ -117,6 +210,10 @@ void Score::render(sf::RenderWindow& window, int currentPlayer, BallGroup groupP
     window.draw(rightPanelBg);
     window.draw(railGroove);
     window.draw(topPanel);
+
+    // Draw Pause Button
+    window.draw(pauseBtnBg);
+    for(int i=0; i<3; i++) window.draw(hamburgerLines[i]);
 
     // SIDE PANEL RAIL
     float railCenterX = windowWidth - (rightPanelWidth / 2.f);

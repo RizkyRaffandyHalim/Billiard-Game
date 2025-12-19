@@ -18,13 +18,14 @@ enum GameState {
     SOLID_TURN,
     STRIPES_TURN,
     BALL_IN_HAND,
-    GAME_OVER
+    GAME_OVER,
+    PAUSED
 };
 
 class GameManager {
 public:
     GameManager(int windowW = 1080, int windowH = 600, float border = 50.f);
-    void run();
+    int run(); // void menjadi int (0 = exit, 1 = back to menu)
 
 private:
     // Window & Dimensions
@@ -45,6 +46,7 @@ private:
 
     // Game State
     GameState currentGameState;
+    GameState previousGameState;
     int currentPlayer;
     BallGroup playerGroup[3];
 
@@ -59,6 +61,9 @@ private:
     int firstObjectBallHit;
     bool isDragging;
     
+    // Return status untuk main loop
+    int gameResultStatus; 
+
     sf::Font font;
 
     // Helper Methods

@@ -21,6 +21,11 @@ public:
                 const std::string& statusMessage,
                 sf::Color statusColor);
 
+    void renderPauseMenu(sf::RenderWindow& window);
+
+    bool isPauseBtnClicked(sf::Vector2f mousePos);
+    int getPauseMenuAction(sf::Vector2f mousePos);
+
 private:
     void drawMiniBall(sf::RenderWindow& window, float x, float y, int number, std::map<int, sf::Texture>& textures);
     std::string getGroupStr(BallGroup group) const;
@@ -50,4 +55,13 @@ private:
 
     sf::Texture p2AvatarTexture;
     sf::Sprite p2AvatarSprite;
+
+    sf::RectangleShape pauseBtnBg;
+    sf::RectangleShape hamburgerLines[3];
+    sf::RectangleShape pauseOverlay;
+    sf::RectangleShape btnResume;
+    sf::RectangleShape btnQuit;
+    sf::Text txtResume;
+    sf::Text txtQuit;
+    sf::Text txtPausedTitle;
 };

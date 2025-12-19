@@ -18,7 +18,6 @@ GameManager::GameManager(int windowW, int windowH, float border)
     window.create(sf::VideoMode(windowWidth, windowHeight + topUIHeight + bottomUIHeight), "Simulation Billiard Game");
     window.setFramerateLimit(60);
 
-    // Batas Pantulan Bola
     float cushionOffset = 14.f; 
 
     tableLeft   = borderThickness + leftPanelWidth + cushionOffset;
@@ -34,10 +33,8 @@ GameManager::GameManager(int windowW, int windowH, float border)
     table.felt.setPosition(visualTableLeft, visualTableTop);
     table.felt.setSize(sf::Vector2f(playAreaWidth, playAreaHeight));
 
-    // Warna cushion
     table.setupCushions(cushionOffset, sf::Color(0, 30, 50));
     
-    // Init State
     currentGameState = BREAK;
     currentPlayer = 1;
     shotMade = false;
@@ -47,15 +44,14 @@ GameManager::GameManager(int windowW, int windowH, float border)
     ballHitRailAfterContact = false;
     firstObjectBallHit = -1;
     isDragging = false;
+    gameResultStatus = 0; 
 
     if (!font.loadFromFile("arial.ttf")) {
         std::cerr << "Error loading font." << std::endl;
     }
 
-    // Load Assets untuk UI
     score.loadAssets(font);
 
-    // LOAD BALL TEXTURES
     for (int i = 0; i <= 15; i++) {
         std::string filename = "assets/Ball" + std::to_string(i) + ".png";
         sf::Texture tex;
@@ -136,6 +132,35 @@ void GameManager::processEvents() {
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) window.close();
 
+        // PAUSE MENU HANDLING
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+            sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+            sf::Vector2f mp = window.mapPixelToCoords(pixelPos);
+
+            // 1. Jika Sedang PAUSE
+            if (currentGameState == PAUSED) {
+                int action = score.getPauseMenuAction(mp);
+                if (action == 1) { // RESUME
+                    currentGameState = previousGameState;
+                } else if (action == 2) { // QUIT
+                    window.close();
+                    gameResultStatus = 1; 
+                }
+                return;
+            }
+
+            // 2. Tombol Pause (Hanya boleh dipencet jika bola diam)
+            if (allBallsStopped() && !isDragging) {
+                 if (score.isPauseBtnClicked(mp)) {
+                     previousGameState = currentGameState;
+                     currentGameState = PAUSED;
+                     return;
+                 }
+            }
+        }
+
+        if (currentGameState == PAUSED) continue;
+
         // Reset Debug
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R) {
             createRack(tableLeft, tableTop, tableRight, tableBottom);
@@ -189,9 +214,9 @@ void GameManager::processEvents() {
 }
 
 void GameManager::update(float dt) {
-    bool canAim = allBallsStopped();
+    if (currentGameState == PAUSED) return; // Jangan update fisika saat pause
 
-    // PHYSICS
+    bool canAim = allBallsStopped();
     
     // Cek Rail untuk Cueball
     if (!cueBall.isPocketed && cueBall.isMoving()) {
@@ -351,6 +376,10 @@ void GameManager::handleTurnEnd() {
 }
 
 std::string GameManager::getStatusMessage(sf::Color& outColor) {
+    if (currentGameState == PAUSED) {
+        outColor = sf::Color::Yellow;
+        return "GAME PAUSED";
+    }
     std::string msg;
     if (currentGameState == GAME_OVER) {
         msg = "GAME OVER! Player " + std::to_string(currentPlayer) + " MENANG!";
@@ -384,7 +413,7 @@ void GameManager::render() {
     sf::Color statusColor;
     std::string statusMsg = getStatusMessage(statusColor);
 
-    // 2. Render UI (Delegated to Score class)
+    // 2. Render UI
     score.render(window, currentPlayer, playerGroup[1], playerGroup[2], 
                  objectBalls, pocketedOrder, ballTextures, statusMsg, statusColor);
 
@@ -396,10 +425,15 @@ void GameManager::render() {
     for (auto &b : objectBalls) b.draw(window, font, &ballTextures[b.ballNumber]); 
     cueBall.draw(window, font, &ballTextures[0]);
 
+    // Jika Pause, Render Overlay
+    if (currentGameState == PAUSED) {
+        score.renderPauseMenu(window);
+    }
+
     window.display();
 }
 
-void GameManager::run() {
+int GameManager::run() {
     sf::Clock clock;
     while (window.isOpen()) {
         processEvents();
@@ -407,4 +441,5 @@ void GameManager::run() {
         update(dt);
         render();
     }
+    return gameResultStatus;
 }
