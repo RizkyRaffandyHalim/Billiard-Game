@@ -149,7 +149,7 @@ void GameManager::processEvents() {
                 return;
             }
 
-            // 2. Tombol Pause (Hanya boleh dipencet jika bola diam)
+            // 2. Tombol Pause (Hanya boleh diklik ketika bola diam)
             if (allBallsStopped() && !isDragging) {
                  if (score.isPauseBtnClicked(mp)) {
                      previousGameState = currentGameState;

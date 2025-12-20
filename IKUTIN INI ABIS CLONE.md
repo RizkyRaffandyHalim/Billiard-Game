@@ -1,5 +1,10 @@
-Langkah - langkah setelah clone repo:
+Notes: Pastikan Compiler C++ sudah terpasang, lalu instalasi Cmake versi 4.2.0 & Library SFML versi 2.6.1
+Link Download Cmake: https://cmake.org/download/ (sesuaikan dengan compiler C++ & spesifikasi laptop)
+Link Download SFML: https://www.sfml-dev.org/download/sfml/2.6.1/ (sesuaikan dengan compiler C++ & spesifikasi laptop)
 
+Repository GitHub: https://github.com/RizkyRaffandyHalim/Billiard-Game.git
+
+Langkah - langkah setelah clone repo:
 1. Crtl + Shift + P
 2. Tasks: Configure default build task
 3. build SFML (billiard game)
